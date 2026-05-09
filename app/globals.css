@@ -1,0 +1,102 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-surface: #131316;
+  --color-surface-dim: #131316;
+  --color-surface-bright: #39393c;
+  --color-surface-container-lowest: #0e0e11;
+  --color-surface-container-low: #1b1b1e;
+  --color-surface-container: #1f1f22;
+  --color-surface-container-high: #2a2a2d;
+  --color-surface-container-highest: #353438;
+  --color-on-surface: #e4e1e6;
+  --color-on-surface-variant: #d0c5b5;
+  --color-inverse-surface: #e4e1e6;
+  --color-inverse-on-surface: #303033;
+  --color-outline: #999081;
+  --color-outline-variant: #4d463a;
+  --color-surface-tint: #e2c382;
+  --color-primary: #fff6ea;
+  --color-on-primary: #3f2e00;
+  --color-primary-container: #f7d794;
+  --color-on-primary-container: #745c26;
+  --color-inverse-primary: #725b25;
+  --color-secondary: #ffb3b1;
+  --color-on-secondary: #670412;
+  --color-secondary-container: #871f26;
+  --color-on-secondary-container: #ff9997;
+  --color-tertiary: #f7f7ff;
+  --color-on-tertiary: #002e69;
+  --color-tertiary-container: #cddbff;
+  --color-on-tertiary-container: #225db7;
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+  --color-primary-fixed: #ffdf9c;
+  --color-primary-fixed-dim: #e2c382;
+  --color-on-primary-fixed: #251a00;
+  --color-on-primary-fixed-variant: #59440e;
+  --color-secondary-fixed: #ffdad8;
+  --color-secondary-fixed-dim: #ffb3b1;
+  --color-on-secondary-fixed: #410007;
+  --color-on-secondary-fixed-variant: #871f26;
+  --color-tertiary-fixed: #d8e2ff;
+  --color-tertiary-fixed-dim: #adc6ff;
+  --color-on-tertiary-fixed: #001a41;
+  --color-on-tertiary-fixed-variant: #004494;
+  --color-background: #131316;
+  --color-on-background: #e4e1e6;
+
+  --font-display-hero: var(--font-bodoni);
+  --font-headline-lg: var(--font-bodoni);
+  --font-body-main: var(--font-sora);
+  --font-label-caps: var(--font-sora);
+  --font-mono: var(--font-fira-code);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-background font-body-main;
+    background-image: 
+      radial-gradient(circle at 0% 0%, rgba(226, 195, 130, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(255, 179, 177, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(0, 46, 105, 0.2) 0%, transparent 70%);
+    background-attachment: fixed;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(226, 195, 130, 0.3);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(226, 195, 130, 0.5);
+  }
+}
+
+.glass-panel {
+  background: rgba(27, 27, 30, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+
+.terminal-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.terminal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.terminal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(226, 195, 130, 0.3);
+  border-radius: 4px;
+}
