@@ -7,6 +7,7 @@ import { NeuralAnalytics } from '@/components/NeuralAnalytics';
 import { ScraperTerminal } from '@/components/ScraperTerminal';
 import { ToastProvider } from '@/components/ToastProvider';
 import { useNewsStore } from '@/store/newsStore';
+import { SearchDashboard } from '@/components/SearchDashboard';
 
 export default function Page() {
   const activeTab = useNewsStore(state => state.activeTab);
@@ -19,8 +20,9 @@ export default function Page() {
       {activeTab === 'exclusives' && <EditorialFeature />}
       {activeTab === 'runway' && <TrendingDashboard />}
       {activeTab === 'archives' && <NeuralAnalytics />}
+      {activeTab === 'search' && <SearchDashboard />}
       
-      {activeTab === 'latest' && <ScraperTerminal />}
+      {(activeTab === 'latest' || activeTab === 'search') && <ScraperTerminal />}
       <ToastProvider />
       
       {/* Decorative Aurora Elements (Global) */}

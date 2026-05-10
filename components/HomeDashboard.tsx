@@ -32,7 +32,7 @@ export function HomeDashboard() {
   const regularArticles = articles.slice(3, 11);
 
   return (
-    <div className="flex-1 max-w-7xl mx-auto w-full pt-32 pb-32 px-6 md:px-12 lg:px-16 space-y-8 relative z-10">
+    <div className="flex-1 max-w-7xl mx-auto w-full pt-40 md:pt-32 pb-32 px-6 md:px-12 lg:px-16 space-y-8 relative z-10">
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="font-display-hero text-3xl md:text-5xl text-primary mb-2">Latest Intercepts</h1>

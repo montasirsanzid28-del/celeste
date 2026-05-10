@@ -68,7 +68,7 @@ export function NeuralAnalytics() {
   if (articles.length === 0) return null;
 
   return (
-    <div className="flex-1 w-full pt-32 pb-32 px-6 md:px-12 lg:px-16 space-y-8 relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+    <div className="flex-1 w-full pt-40 md:pt-32 pb-32 px-6 md:px-12 lg:px-16 space-y-8 relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
       
       {/* Sidebar */}
       <aside className="hidden lg:flex flex-col w-64 shrink-0 glass-panel rounded-xl p-6 h-fit sticky top-32 space-y-8">

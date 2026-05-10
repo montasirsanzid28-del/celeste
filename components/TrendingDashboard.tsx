@@ -46,7 +46,7 @@ export function TrendingDashboard() {
   if (articles.length === 0) return null;
 
   return (
-    <div className="flex-1 w-full pt-32 pb-32 px-6 md:px-12 lg:px-16 space-y-8 relative z-10 max-w-7xl mx-auto">
+    <div className="flex-1 w-full pt-40 md:pt-32 pb-32 px-6 md:px-12 lg:px-16 space-y-8 relative z-10 max-w-7xl mx-auto">
       <div className="mb-12">
         <h1 className="font-display-hero text-4xl md:text-6xl text-primary mb-4 drop-shadow-lg">Trending Dashboard</h1>
         <p className="text-on-surface-variant max-w-2xl text-base">Real-time analysis of the elite cultural zeitgeist. High-fidelity tracking of market movements based on scraped intercepts.</p>

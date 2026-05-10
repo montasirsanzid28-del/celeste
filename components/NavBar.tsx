@@ -1,12 +1,23 @@
 'use client';
+import { useState } from 'react';
 import { useNewsStore, TabType } from '@/store/newsStore';
-import { Sparkles, Terminal, BookOpen, Clock, ScanEye } from 'lucide-react';
+import { Sparkles, Terminal, BookOpen, Clock, ScanEye, Search } from 'lucide-react';
 
 export function NavBar() {
   const scrapeNews = useNewsStore(state => state.scrapeNews);
+  const searchNews = useNewsStore(state => state.searchNews);
   const isScraping = useNewsStore(state => state.isScraping);
   const activeTab = useNewsStore(state => state.activeTab);
   const setActiveTab = useNewsStore(state => state.setActiveTab);
+  const [query, setQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      searchNews(query.trim());
+      setQuery('');
+    }
+  };
 
   const getNavClass = (tab: TabType) => 
     activeTab === tab 
@@ -29,6 +40,18 @@ export function NavBar() {
           <button onClick={() => setActiveTab('archives')} className={getNavClass('archives')}>Archives</button>
         </div>
         <div className="flex gap-4 items-center">
+          <form onSubmit={handleSearch} className="relative">
+            <input 
+              type="text" 
+              placeholder="TARGET OVERRIDE..." 
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="bg-surface-container/50 border border-primary-fixed-dim/20 rounded-full px-4 py-2 font-label-caps text-xs text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary-fixed-dim/60 transition-colors w-48 focus:w-64"
+            />
+            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-fixed-dim hover:text-primary-fixed">
+              <Search size={14} />
+            </button>
+          </form>
           <button 
             onClick={scrapeNews}
             disabled={isScraping}
@@ -61,15 +84,29 @@ export function NavBar() {
       </nav>
 
       {/* Mobile Top Header */}
-      <header className="md:hidden fixed top-0 w-full z-40 flex justify-between items-center px-6 py-6 bg-surface/80 backdrop-blur-md border-b border-white/5">
-        <div className="font-display-hero text-3xl tracking-tighter text-primary-fixed-dim uppercase">CELESTE</div>
-        <button 
-            onClick={scrapeNews}
-            disabled={isScraping}
-            className={`w-10 h-10 flex items-center justify-center rounded-full border ${isScraping ? 'border-secondary-fixed-dim text-secondary-fixed-dim' : 'border-primary-fixed-dim/30 text-primary-fixed-dim'} transition-all`}
-          >
-            <ScanEye size={18} className={isScraping ? 'animate-pulse' : ''} />
-        </button>
+      <header className="md:hidden fixed top-0 w-full z-40 flex flex-col gap-4 items-center px-6 py-6 bg-surface/90 backdrop-blur-md border-b border-white/5">
+        <div className="flex justify-between items-center w-full">
+          <div className="font-display-hero text-3xl tracking-tighter text-primary-fixed-dim uppercase">CELESTE</div>
+          <button 
+              onClick={scrapeNews}
+              disabled={isScraping}
+              className={`w-10 h-10 flex items-center justify-center rounded-full border ${isScraping ? 'border-secondary-fixed-dim text-secondary-fixed-dim' : 'border-primary-fixed-dim/30 text-primary-fixed-dim'} transition-all`}
+            >
+              <ScanEye size={18} className={isScraping ? 'animate-pulse' : ''} />
+          </button>
+        </div>
+        <form onSubmit={handleSearch} className="relative w-full">
+          <input 
+            type="text" 
+            placeholder="TARGET OVERRIDE (e.g. jenna ortega)..." 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full bg-surface-container/50 border border-primary-fixed-dim/20 rounded-full px-4 py-2 font-label-caps text-xs text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary-fixed-dim/60 transition-colors"
+          />
+          <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-fixed-dim hover:text-primary-fixed">
+            <Search size={14} />
+          </button>
+        </form>
       </header>
     </>
   );

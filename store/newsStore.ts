@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type TabType = 'latest' | 'exclusives' | 'runway' | 'archives';
+export type TabType = 'latest' | 'exclusives' | 'runway' | 'archives' | 'search';
 
 export interface Toast {
   id: string;
@@ -34,9 +34,15 @@ export interface Article {
 interface NewsState {
   articles: Article[];
   logs: string[];
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  searchHistory: string[];
+  clearSearchHistory: () => void;
+  searchResults: Article[];
   isScraping: boolean;
   lastSync: Date | null;
   scrapeNews: () => Promise<void>;
+  searchNews: (query: string) => Promise<void>;
   analyzeArticle: (id: string) => Promise<void>;
   showTerminal: boolean;
   setShowTerminal: (show: boolean) => void;
@@ -51,6 +57,11 @@ interface NewsState {
 export const useNewsStore = create<NewsState>((set, get) => ({
   articles: [],
   logs: [],
+  searchQuery: '',
+  setSearchQuery: (q) => set({ searchQuery: q }),
+  searchHistory: [],
+  clearSearchHistory: () => set({ searchHistory: [] }),
+  searchResults: [],
   isScraping: false,
   lastSync: null,
   showTerminal: false,
@@ -66,11 +77,13 @@ export const useNewsStore = create<NewsState>((set, get) => ({
   },
   analyzeArticle: async (id) => {
     const state = get();
-    const article = state.articles.find(a => a.id === id);
+    const isSearchArticle = !!state.searchResults.find(a => a.id === id);
+    const article = isSearchArticle ? state.searchResults.find(a => a.id === id) : state.articles.find(a => a.id === id);
     if (!article || article.neuralData || article.isAnalyzing) return;
 
     set(state => ({
-      articles: state.articles.map(a => a.id === id ? { ...a, isAnalyzing: true } : a)
+      articles: isSearchArticle ? state.articles : state.articles.map(a => a.id === id ? { ...a, isAnalyzing: true } : a),
+      searchResults: isSearchArticle ? state.searchResults.map(a => a.id === id ? { ...a, isAnalyzing: true } : a) : state.searchResults
     }));
 
     try {
@@ -128,14 +141,16 @@ Extract the requested neural data:
       const neuralData = JSON.parse(jsonStr) as NeuralData;
 
       set(state => ({
-        articles: state.articles.map(a => a.id === id ? { ...a, isAnalyzing: false, neuralData } : a)
+        articles: isSearchArticle ? state.articles : state.articles.map(a => a.id === id ? { ...a, isAnalyzing: false, neuralData } : a),
+        searchResults: isSearchArticle ? state.searchResults.map(a => a.id === id ? { ...a, isAnalyzing: false, neuralData } : a) : state.searchResults
       }));
       
       get().addToast(`Neural extraction complete for "${article.title.substring(0, 20)}..."`, 'success');
 
     } catch (err: any) {
       set(state => ({
-        articles: state.articles.map(a => a.id === id ? { ...a, isAnalyzing: false } : a)
+        articles: isSearchArticle ? state.articles : state.articles.map(a => a.id === id ? { ...a, isAnalyzing: false } : a),
+        searchResults: isSearchArticle ? state.searchResults.map(a => a.id === id ? { ...a, isAnalyzing: false } : a) : state.searchResults
       }));
       get().addToast(err.message || 'Neural Extraction failed', 'error');
     }
@@ -175,6 +190,58 @@ Extract the requested neural data:
         terminalLogs: [...state.terminalLogs, `[ERROR] Scrape protocol encountered a fatal error: ${e.message}`] 
       }));
       get().addToast(e.message || 'Scrape operation failed.', 'error');
+    } finally {
+      set({ isScraping: false });
+    }
+  },
+  searchNews: async (query: string) => {
+    if (!query) return;
+    
+    set((state) => {
+      const history = state.searchHistory.filter(q => q.toLowerCase() !== query.toLowerCase());
+      return { 
+        isScraping: true, 
+        showTerminal: true, 
+        activeTab: 'search',
+        searchQuery: query,
+        searchHistory: [query, ...history].slice(0, 10),
+        terminalLogs: [`[SYSTEM] Initializing targeted search protocol for: ${query}...`] 
+      };
+    });
+
+    try {
+      const res = await fetch(`/api/scrape?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to sync with syndicate nodes');
+      }
+      
+      if (data.articles && data.articles.length > 0) {
+        set({ 
+          searchResults: data.articles, 
+          lastSync: new Date(),
+        });
+        get().addToast(`Found ${data.articles.length} intercepts for ${query}.`, 'success');
+      } else {
+        set({ searchResults: [] });
+        get().addToast(`No intercepts found for ${query}.`, 'info');
+      }
+      
+      if (data.logs) {
+         let currentLogs = [`[SYSTEM] Initializing targeted search protocol for: ${query}...`];
+         for(let i = 0; i < data.logs.length; i++) {
+            await new Promise(r => setTimeout(r, 100));
+            currentLogs.push(data.logs[i]);
+            set({ terminalLogs: [...currentLogs] });
+         }
+      }
+
+    } catch (e: any) {
+      set((state) => ({ 
+        terminalLogs: [...state.terminalLogs, `[ERROR] Search protocol encountered a fatal error: ${e.message}`] 
+      }));
+      get().addToast(e.message || 'Search operation failed.', 'error');
     } finally {
       set({ isScraping: false });
     }
