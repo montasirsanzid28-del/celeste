@@ -138,6 +138,7 @@ export async function GET(request: Request) {
     uniqueArticles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
     logs.push(`> Awaiting further packets...`);
+    logs.push(`[TRADEMARK] © ALL SCRAPING BELONGS TO MONT`);
 
     return NextResponse.json({ 
       articles: q ? uniqueArticles.slice(0, 100) : uniqueArticles.filter(a => a.imageUrl).slice(0, 100), // Filter out articles without images only for general view to keep UI nice.

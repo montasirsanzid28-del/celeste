@@ -42,8 +42,9 @@ export function ScraperTerminal() {
           if (log.includes('[WARN]')) color = 'text-secondary-fixed-dim';
           if (log.includes('[DATA]')) color = 'text-primary-fixed-dim';
           if (log.includes('[ANALYSIS]')) color = 'text-tertiary-fixed-dim';
+          if (log.includes('[TRADEMARK]')) color = 'text-[9px] uppercase tracking-[0.2em] text-primary-fixed drop-shadow-[0_0_5px_rgba(202,196,208,0.5)] mt-4 block border-t border-primary-fixed-dim/20 pt-2 opacity-80 text-center';
 
-          return <div key={i} className={color}>{log}</div>;
+          return <div key={i} className={color}>{log.replace('[TRADEMARK]', '')}</div>;
         })}
         {isScraping && <div className="text-on-surface opacity-50 animate-pulse">&gt; Awaiting further packets... _</div>}
       </div>

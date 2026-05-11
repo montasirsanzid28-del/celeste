@@ -40,6 +40,9 @@ export function NavBar() {
           <button onClick={() => setActiveTab('archives')} className={getNavClass('archives')}>Archives</button>
         </div>
         <div className="flex gap-4 items-center">
+          <div className="hidden lg:flex items-center px-3 py-1 rounded-full border border-primary-fixed-dim/30 bg-primary-fixed-dim/5 shadow-[0_0_10px_rgba(202,196,208,0.2)]">
+            <span className="font-label-caps text-[9px] uppercase tracking-widest text-primary-fixed-dim">Developed by Mont</span>
+          </div>
           <form onSubmit={handleSearch} className="relative">
             <input 
               type="text" 
@@ -86,7 +89,10 @@ export function NavBar() {
       {/* Mobile Top Header */}
       <header className="md:hidden fixed top-0 w-full z-40 flex flex-col gap-4 items-center px-6 py-6 bg-surface/90 backdrop-blur-md border-b border-white/5">
         <div className="flex justify-between items-center w-full">
-          <div className="font-display-hero text-3xl tracking-tighter text-primary-fixed-dim uppercase">CELESTE</div>
+          <div className="flex flex-col">
+            <div className="font-display-hero text-3xl tracking-tighter text-primary-fixed-dim uppercase leading-none">CELESTE</div>
+            <div className="font-label-caps text-[8px] uppercase tracking-widest text-primary-fixed-dim/80 mt-1 drop-shadow-[0_0_5px_rgba(202,196,208,0.5)]">Developed by Mont</div>
+          </div>
           <button 
               onClick={scrapeNews}
               disabled={isScraping}
